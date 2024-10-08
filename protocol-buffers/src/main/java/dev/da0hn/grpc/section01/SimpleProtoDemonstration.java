@@ -1,6 +1,6 @@
 package dev.da0hn.grpc.section01;
 
-import dev.da0hn.grpc.proto.models.PersonOuterClass;
+import dev.da0hn.grpc.proto.models.section01.PersonOuterClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

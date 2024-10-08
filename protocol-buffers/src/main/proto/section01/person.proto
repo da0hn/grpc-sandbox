@@ -1,6 +1,7 @@
 syntax = "proto3";
 
-option java_package = "dev.da0hn.grpc.proto.models";
+package section01;
+option java_package = "dev.da0hn.grpc.proto.models.section01";
 
 message Person {
   string name = 1;
