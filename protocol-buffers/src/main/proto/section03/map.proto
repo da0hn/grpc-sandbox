@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package section03;
+
+option java_multiple_files = true;
+option java_package = "dev.da0hn.grpc.proto.models.section03";
+
+message Car {
+  string make = 1;
+  string model = 2;
+  int32 year = 3;
+}
+
+message Dealer {
+  string name = 1;
+  map<int32, Car> inventory = 2;
+}
+
+// Complex data structures:
+
+message Cars {
+  repeated Car cars = 1;
+}
+
+message ComplexDealer {
+  string name = 1;
+  map<int32, Cars> cars = 2;
+}
