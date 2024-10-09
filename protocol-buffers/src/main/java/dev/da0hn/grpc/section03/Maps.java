@@ -1,5 +1,6 @@
 package dev.da0hn.grpc.section03;
 
+import dev.da0hn.grpc.proto.models.section03.BodyStyle;
 import dev.da0hn.grpc.proto.models.section03.Car;
 import dev.da0hn.grpc.proto.models.section03.Dealer;
 import org.slf4j.Logger;
@@ -14,11 +15,13 @@ public class Maps {
       .setModel("Toyota")
       .setMake("Corolla")
       .setYear(2021)
+      .setBodyStyle(BodyStyle.SEDAN)
       .build();
     final var car2 = Car.newBuilder()
       .setModel("Toyota")
       .setMake("Camry")
       .setYear(2021)
+      .setBodyStyle(BodyStyle.SUV)
       .build();
     final var dealer = Dealer.newBuilder()
       .setName("John")

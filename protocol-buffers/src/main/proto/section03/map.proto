@@ -9,6 +9,18 @@ message Car {
   string make = 1;
   string model = 2;
   int32 year = 3;
+  BodyStyle body_style = 4;
+}
+
+enum BodyStyle {
+  SEDAN = 0;
+  COUPE = 1;
+  CONVERTIBLE = 2;
+  HATCHBACK = 3;
+  WAGON = 4;
+  SUV = 5;
+  TRUCK = 6;
+  VAN = 7;
 }
 
 message Dealer {
