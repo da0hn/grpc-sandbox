@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package section05.v3;
+package section05.v4;
 
 option java_multiple_files = true;
-option java_package = "dev.da0hn.grpc.proto.models.section05.v3";
+option java_package = "dev.da0hn.grpc.proto.models.section05.v4";
 
 /**
   * Requirement
