@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package section05.v3;
+
+option java_multiple_files = true;
+option java_package = "dev.da0hn.grpc.proto.models.section05.v3";
+
+/**
+  * Requirement
+  * - Add price info
+ */
+message Television {
+  string brand = 1;
+  reserved 2;
+  reserved "year", "model";
+  Type type = 3;
+  int32 price = 4;
+}
+
+enum Type {
+  UNKNOWN = 0;
+  HD = 1;
+  UHD = 2;
+  OLED = 3;
+}

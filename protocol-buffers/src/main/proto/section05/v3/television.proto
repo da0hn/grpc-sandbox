@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package section05.v3;
+
+option java_multiple_files = true;
+option java_package = "dev.da0hn.grpc.proto.models.section05.v3";
+
+/**
+  * We NO longer need model/year, remove that
+ */
+message Television {
+  string brand = 1;
+  reserved 2;
+  reserved "year", "model";
+  Type type = 4;
+  // int32 year = 5; Don't work field name "year" is reserved.
+}
+
+enum Type {
+  UNKNOWN = 0;
+  HD = 1;
+  UHD = 2;
+  OLED = 3;
+}

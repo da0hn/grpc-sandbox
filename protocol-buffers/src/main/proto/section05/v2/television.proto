@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package section05.v2;
+
+option java_multiple_files = true;
+option java_package = "dev.da0hn.grpc.proto.models.section05.v2";
+
+message Television {
+  string brand = 1;
+  // changed year to model
+  int32 model = 3;
+  Type type = 4;
+}
+
+enum Type {
+  HD = 0;
+  UHD = 1;
+  OLED = 2;
+}
