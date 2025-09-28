@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package section06;
 
+import "google/protobuf/empty.proto";
+
 option java_multiple_files = true;
 option java_package = "dev.da0hn.grpc.proto.section06";
 
@@ -18,13 +20,12 @@ message Accounts {
   repeated AccountBalance accounts = 1;
 }
 
-message EmptyMessage {}
 
 service BankService {
   rpc GetAccountBalance (BalanceCheckRequest) returns (AccountBalance);
 
-  rpc GetAllAccountsStream (EmptyMessage) returns (stream AccountBalance);
+  rpc GetAllAccountsStream (google.protobuf.Empty) returns (stream AccountBalance);
 
-  rpc GetAllAccounts (EmptyMessage) returns (Accounts);
+  rpc GetAllAccounts (google.protobuf.Empty) returns (Accounts);
 
 }

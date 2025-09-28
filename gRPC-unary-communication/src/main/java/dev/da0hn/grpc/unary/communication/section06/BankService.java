@@ -1,10 +1,10 @@
 package dev.da0hn.grpc.unary.communication.section06;
 
+import com.google.protobuf.Empty;
 import dev.da0hn.grpc.proto.section06.AccountBalance;
 import dev.da0hn.grpc.proto.section06.Accounts;
 import dev.da0hn.grpc.proto.section06.BalanceCheckRequest;
 import dev.da0hn.grpc.proto.section06.BankServiceGrpc;
-import dev.da0hn.grpc.proto.section06.EmptyMessage;
 import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
 import io.grpc.stub.StreamObserver;
 
@@ -28,7 +28,7 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
     }
 
     @Override
-    public void getAllAccountsStream(final EmptyMessage request, final StreamObserver<AccountBalance> responseObserver) {
+    public void getAllAccountsStream(final Empty request, final StreamObserver<AccountBalance> responseObserver) {
 
         final var accounts = AccountRepository.getAllAccounts();
 
@@ -44,7 +44,7 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
     }
 
     @Override
-    public void getAllAccounts(final EmptyMessage request, final StreamObserver<Accounts> responseObserver) {
+    public void getAllAccounts(final Empty request, final StreamObserver<Accounts> responseObserver) {
         final var accounts = AccountRepository.getAllAccounts();
 
         final var accountsResponse = Accounts.newBuilder();
