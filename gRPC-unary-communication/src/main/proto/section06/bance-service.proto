@@ -14,6 +14,17 @@ message AccountBalance {
   int32 balance = 2;
 }
 
+message Accounts {
+  repeated AccountBalance accounts = 1;
+}
+
+message EmptyMessage {}
+
 service BankService {
   rpc GetAccountBalance (BalanceCheckRequest) returns (AccountBalance);
+
+  rpc GetAllAccountsStream (EmptyMessage) returns (stream AccountBalance);
+
+  rpc GetAllAccounts (EmptyMessage) returns (Accounts);
+
 }
