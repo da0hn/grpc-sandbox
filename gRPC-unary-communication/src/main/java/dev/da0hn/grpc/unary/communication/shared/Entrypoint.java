@@ -1,8 +1,8 @@
-package dev.da0hn.grpc.unary.communication.section06;
+package dev.da0hn.grpc.unary.communication.shared;
 
-import dev.da0hn.grpc.unary.communication.shared.GrpcServer;
+import dev.da0hn.grpc.unary.communication.section06.BankService;
 
-public class Demonstration {
+public class Entrypoint {
 
     static void main(final String[] args) {
         GrpcServer.create(new BankService())
