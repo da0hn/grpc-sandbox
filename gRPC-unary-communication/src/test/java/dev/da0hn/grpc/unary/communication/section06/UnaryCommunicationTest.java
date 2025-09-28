@@ -5,10 +5,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class UnaryCommunicationTest extends AbstractTest {
+class UnaryCommunicationTest extends AbstractTest {
 
     @Test
-    @DisplayName("")
+    @DisplayName("Should get the account balance for a given account number")
     void test1() {
         final var expectedAccountNumber = 123;
         final var request = BalanceCheckRequest.newBuilder()
@@ -17,7 +17,6 @@ public class UnaryCommunicationTest extends AbstractTest {
         final var response = this.blockingStub.getAccountBalance(request);
         Assertions.assertThat(response.getBalance()).isNotZero();
         Assertions.assertThat(response.getAccountNumber()).isEqualTo(expectedAccountNumber);
-
     }
 
 }
