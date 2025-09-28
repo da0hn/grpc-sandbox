@@ -9,7 +9,9 @@ import java.util.stream.IntStream;
 
 public class AccountRepository {
 
-    private static final Map<Integer, Integer> IN_MEMORY_DATABASE = IntStream.rangeClosed(1, 1000)
+    public static final int ACCOUNTS_QUANTITY = 1000;
+
+    private static final Map<Integer, Integer> IN_MEMORY_DATABASE = IntStream.rangeClosed(1, ACCOUNTS_QUANTITY)
         .boxed()
         .collect(Collectors.toConcurrentMap(Function.identity(), _ -> ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE)));
 
@@ -22,9 +24,5 @@ public class AccountRepository {
     public static Map<Integer, Integer> getAllAccounts() {
         return new HashMap<>(IN_MEMORY_DATABASE);
     }
-
-
-
-
 
 }
