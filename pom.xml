@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>protocol-buffers</module>
+        <module>gRPC-unary-communication</module>
     </modules>
 
     <properties>
