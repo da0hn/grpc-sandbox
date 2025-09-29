@@ -1,17 +1,16 @@
 package dev.da0hn.grpc.unary.communication.section06;
 
 import com.google.protobuf.Empty;
+import dev.da0hn.grpc.proto.section06.AccountBalance;
 import dev.da0hn.grpc.proto.section06.Accounts;
 import dev.da0hn.grpc.proto.section06.BalanceCheckRequest;
 import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
-import io.grpc.stub.StreamObserver;
+import dev.da0hn.grpc.unary.communication.shared.ResponseObservable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.CountDownLatch;
 
 class UnaryCommunicationTest extends AbstractTest {
 
@@ -38,30 +37,35 @@ class UnaryCommunicationTest extends AbstractTest {
     }
 
     @Test
-    @DisplayName("Should get all accounts asynchronously")
-    void test3() throws InterruptedException {
-        final var latch = new CountDownLatch(1);
-        this.asyncStub.getAllAccounts(
-            Empty.getDefaultInstance(), new StreamObserver<>() {
-                @Override
-                public void onNext(final Accounts value) {
-                    log.info("Received async accounts: {}", value);
-                    Assertions.assertThat(value.getAccountsList()).isNotEmpty();
-                    Assertions.assertThat(value.getAccountsCount()).isEqualTo(AccountRepository.ACCOUNTS_QUANTITY);
-                }
-
-                @Override
-                public void onError(final Throwable t) {
-                    Assertions.fail(t);
-                }
-
-                @Override
-                public void onCompleted() {
-                    latch.countDown();
-                }
-            }
+    @DisplayName("Should get account balance asynchronously for a given account number")
+    void test3() {
+        final var expectedAccountNumber = 123;
+        final var request = BalanceCheckRequest.newBuilder()
+            .setAccountNumber(expectedAccountNumber)
+            .build();
+        final var responseObserver = ResponseObservable.<AccountBalance>create();
+        this.asyncStub.getAccountBalance(
+            request,
+            responseObserver
         );
-        latch.await();
+        responseObserver.await();
+        final var accountBalance = responseObserver.getValueOrThrow();
+        Assertions.assertThat(accountBalance.getAccountNumber()).isEqualTo(expectedAccountNumber);
+        Assertions.assertThat(accountBalance.getBalance()).isNotZero();
+    }
+
+    @Test
+    @DisplayName("Should get all accounts asynchronously")
+    void test4() {
+        final var responseObserver = ResponseObservable.<Accounts>create();
+        this.asyncStub.getAllAccounts(
+            Empty.newBuilder().build(),
+            responseObserver
+        );
+        responseObserver.await();
+        final var accounts = responseObserver.getValueOrThrow();
+        Assertions.assertThat(accounts.getAccountsList()).isNotEmpty();
+        Assertions.assertThat(accounts.getAccountsCount()).isEqualTo(AccountRepository.ACCOUNTS_QUANTITY);
     }
 
 }

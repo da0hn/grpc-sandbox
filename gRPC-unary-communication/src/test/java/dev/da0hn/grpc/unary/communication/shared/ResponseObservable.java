@@ -73,4 +73,8 @@ public class ResponseObservable<T> implements StreamObserver<T> {
         return Optional.of(this.list.getFirst());
     }
 
+    public T getValueOrThrow() {
+        return this.getValue().orElseThrow(() -> new IllegalStateException("No value received"));
+    }
+
 }
