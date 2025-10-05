@@ -9,16 +9,20 @@ import java.util.stream.IntStream;
 
 public class AccountRepository {
 
-    public static final int ACCOUNTS_QUANTITY = 1000;
+    public static final int ACCOUNTS_QUANTITY = 10;
 
     private static final Map<Integer, Integer> IN_MEMORY_DATABASE = IntStream.rangeClosed(1, ACCOUNTS_QUANTITY)
         .boxed()
-        .collect(Collectors.toConcurrentMap(Function.identity(), _ -> ThreadLocalRandom.current().nextInt(1, Integer.MAX_VALUE)));
+        .collect(Collectors.toConcurrentMap(Function.identity(), _ -> ThreadLocalRandom.current().nextInt(1, 10_000)));
 
     private AccountRepository() { }
 
     public static Integer getAccountBalance(final Integer accountNumber) {
         return IN_MEMORY_DATABASE.get(accountNumber);
+    }
+
+    public static void deductAmount(final int accountNumber, final int amount) {
+        IN_MEMORY_DATABASE.computeIfPresent(accountNumber, (key, value) -> value - amount);
     }
 
     public static Map<Integer, Integer> getAllAccounts() {

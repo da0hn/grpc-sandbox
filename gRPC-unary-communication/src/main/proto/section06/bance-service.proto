@@ -20,6 +20,14 @@ message Accounts {
   repeated AccountBalance accounts = 1;
 }
 
+message WithdrawRequest {
+  int32 account_number = 1;
+  int32 amount = 2;
+}
+
+message Money {
+  int32 value = 1;
+}
 
 service BankService {
   rpc GetAccountBalance (BalanceCheckRequest) returns (AccountBalance);
@@ -27,5 +35,7 @@ service BankService {
   rpc GetAllAccountsStream (google.protobuf.Empty) returns (stream AccountBalance);
 
   rpc GetAllAccounts (google.protobuf.Empty) returns (Accounts);
+
+  rpc Withdraw (WithdrawRequest) returns (stream Money);
 
 }

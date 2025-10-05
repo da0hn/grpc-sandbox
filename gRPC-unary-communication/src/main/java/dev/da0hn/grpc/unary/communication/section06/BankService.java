@@ -1,17 +1,24 @@
 package dev.da0hn.grpc.unary.communication.section06;
 
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.protobuf.Empty;
 import dev.da0hn.grpc.proto.section06.AccountBalance;
 import dev.da0hn.grpc.proto.section06.Accounts;
 import dev.da0hn.grpc.proto.section06.BalanceCheckRequest;
 import dev.da0hn.grpc.proto.section06.BankServiceGrpc;
+import dev.da0hn.grpc.proto.section06.Money;
+import dev.da0hn.grpc.proto.section06.WithdrawRequest;
 import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class BankService extends BankServiceGrpc.BankServiceImplBase {
+
+    private static final Logger log = LoggerFactory.getLogger(BankService.class);
 
     @Override
     public void getAccountBalance(final BalanceCheckRequest request, final StreamObserver<AccountBalance> responseObserver) {
@@ -59,6 +66,34 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
 
         responseObserver.onNext(accountsResponse.build());
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void withdraw(final WithdrawRequest request, final StreamObserver<Money> responseObserver) {
+        final var account = request.getAccountNumber();
+        final var requestedAmount = request.getAmount();
+        final var accountBalance = AccountRepository.getAccountBalance(account);
+        if (requestedAmount > accountBalance) {
+            responseObserver.onCompleted();
+            return;
+        }
+
+        log.info("Current balance for account {}: {}", account, accountBalance);
+
+        int currentAmountSent = 0;
+        for (int i = 0; i < (requestedAmount / 10); i++) {
+            currentAmountSent += 10;
+            final var money = Money.newBuilder()
+                .setValue(10)
+                .build();
+            responseObserver.onNext(money);
+            AccountRepository.deductAmount(account, 10);
+            log.info("Sending money to account {}: ({}/{})", account, currentAmountSent, requestedAmount);
+            log.info("Current balance for account {}: {}", account,  AccountRepository.getAccountBalance(account));
+            Uninterruptibles.sleepUninterruptibly(ThreadLocalRandom.current().nextInt(100, 2_500), TimeUnit.MILLISECONDS);
+        }
+        responseObserver.onCompleted();
+
     }
 
     private static void sleep(final int timeoutInMs) {
