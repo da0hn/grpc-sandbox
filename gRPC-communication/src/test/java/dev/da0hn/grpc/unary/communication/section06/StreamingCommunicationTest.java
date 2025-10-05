@@ -3,6 +3,9 @@ package dev.da0hn.grpc.unary.communication.section06;
 import dev.da0hn.grpc.proto.section06.AccountBalance;
 import dev.da0hn.grpc.proto.section06.DepositRequest;
 import dev.da0hn.grpc.proto.section06.Money;
+import dev.da0hn.grpc.proto.section06.TransferRequest;
+import dev.da0hn.grpc.proto.section06.TransferResponse;
+import dev.da0hn.grpc.proto.section06.TransferStatus;
 import dev.da0hn.grpc.proto.section06.WithdrawRequest;
 import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
 import dev.da0hn.grpc.unary.communication.shared.ResponseObservable;
@@ -46,13 +49,13 @@ public class StreamingCommunicationTest extends AbstractTest {
         final var requestObserver = this.asyncStub.deposit(responseObserver);
 
         requestObserver.onNext(DepositRequest.newBuilder()
-            .setAccountNumber(2)
-            .build());
+                                   .setAccountNumber(2)
+                                   .build());
 
         IntStream.rangeClosed(1, 5)
             .forEach(i -> requestObserver.onNext(DepositRequest.newBuilder()
-                .setMoney(Money.newBuilder().setValue(10).build())
-                .build())
+                                                     .setMoney(Money.newBuilder().setValue(10).build())
+                                                     .build())
             );
 
         requestObserver.onCompleted();
@@ -64,7 +67,31 @@ public class StreamingCommunicationTest extends AbstractTest {
         Assertions.assertThat(accountBalance).hasSize(1);
         Assertions.assertThat(accountBalance.get(0).getBalance()).isEqualTo(AccountRepository.getAccountBalance(2));
 
+    }
 
+    @Test
+    @DisplayName("Should transfer amount between two accounts")
+    void test3() {
+
+        final var responseObserver = ResponseObservable.<TransferResponse>create();
+        final var requestObserver = this.asyncTransferStub.transfer(responseObserver);
+
+        IntStream.rangeClosed(1, 5)
+            .forEach(_ -> requestObserver.onNext(
+                TransferRequest.newBuilder()
+                    .setFromAccount(1)
+                    .setToAccount(2)
+                    .setAmount(10)
+                    .build())
+            );
+        requestObserver.onCompleted();
+        responseObserver.await();
+
+        Assertions.assertThat(responseObserver.getValues()).isNotEmpty();
+        Assertions.assertThat(responseObserver.getValues()).hasSize(5);
+        Assertions.assertThat(responseObserver.getValues()).map(TransferResponse::getStatus)
+                .allMatch(status -> status.equals(TransferStatus.COMPLETED));
+        Assertions.assertThat(responseObserver.getThrowable()).isNull();
     }
 
 }
