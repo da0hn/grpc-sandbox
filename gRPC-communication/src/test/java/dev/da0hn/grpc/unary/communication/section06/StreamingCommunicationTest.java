@@ -1,11 +1,16 @@
 package dev.da0hn.grpc.unary.communication.section06;
 
+import dev.da0hn.grpc.proto.section06.AccountBalance;
+import dev.da0hn.grpc.proto.section06.DepositRequest;
 import dev.da0hn.grpc.proto.section06.Money;
 import dev.da0hn.grpc.proto.section06.WithdrawRequest;
+import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
 import dev.da0hn.grpc.unary.communication.shared.ResponseObservable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.stream.IntStream;
 
 public class StreamingCommunicationTest extends AbstractTest {
 
@@ -30,6 +35,35 @@ public class StreamingCommunicationTest extends AbstractTest {
         Assertions.assertThat(streamedMoney)
             .map(Money::getValue)
             .allMatch(rawValue -> rawValue.equals(10));
+
+    }
+
+    @Test
+    @DisplayName("Should deposit a streamed amount after provide the account number")
+    void test2() {
+        final var responseObserver = ResponseObservable.<AccountBalance>create();
+
+        final var requestObserver = this.asyncStub.deposit(responseObserver);
+
+        requestObserver.onNext(DepositRequest.newBuilder()
+            .setAccountNumber(2)
+            .build());
+
+        IntStream.rangeClosed(1, 5)
+            .forEach(i -> requestObserver.onNext(DepositRequest.newBuilder()
+                .setMoney(Money.newBuilder().setValue(10).build())
+                .build())
+            );
+
+        requestObserver.onCompleted();
+
+        responseObserver.await();
+
+        final var accountBalance = responseObserver.getValues();
+        Assertions.assertThat(accountBalance).isNotEmpty();
+        Assertions.assertThat(accountBalance).hasSize(1);
+        Assertions.assertThat(accountBalance.get(0).getBalance()).isEqualTo(AccountRepository.getAccountBalance(2));
+
 
     }
 
