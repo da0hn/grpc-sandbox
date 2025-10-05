@@ -6,8 +6,10 @@ import dev.da0hn.grpc.proto.section06.AccountBalance;
 import dev.da0hn.grpc.proto.section06.Accounts;
 import dev.da0hn.grpc.proto.section06.BalanceCheckRequest;
 import dev.da0hn.grpc.proto.section06.BankServiceGrpc;
+import dev.da0hn.grpc.proto.section06.DepositRequest;
 import dev.da0hn.grpc.proto.section06.Money;
 import dev.da0hn.grpc.proto.section06.WithdrawRequest;
+import dev.da0hn.grpc.unary.communication.section06.handlers.DepositRequestHandler;
 import dev.da0hn.grpc.unary.communication.section06.repository.AccountRepository;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
@@ -89,11 +91,16 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
             responseObserver.onNext(money);
             AccountRepository.deductAmount(account, 10);
             log.info("Sending money to account {}: ({}/{})", account, currentAmountSent, requestedAmount);
-            log.info("Current balance for account {}: {}", account,  AccountRepository.getAccountBalance(account));
+            log.info("Current balance for account {}: {}", account, AccountRepository.getAccountBalance(account));
             Uninterruptibles.sleepUninterruptibly(ThreadLocalRandom.current().nextInt(100, 2_500), TimeUnit.MILLISECONDS);
         }
         responseObserver.onCompleted();
 
+    }
+
+    @Override
+    public StreamObserver<DepositRequest> deposit(final StreamObserver<AccountBalance> responseObserver) {
+        return new DepositRequestHandler(responseObserver);
     }
 
     private static void sleep(final int timeoutInMs) {

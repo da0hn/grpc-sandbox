@@ -29,6 +29,13 @@ message Money {
   int32 value = 1;
 }
 
+message DepositRequest {
+  oneof request {
+    int32 account_number = 1;
+    Money money = 2;
+  }
+}
+
 service BankService {
   rpc GetAccountBalance (BalanceCheckRequest) returns (AccountBalance);
 
@@ -37,5 +44,7 @@ service BankService {
   rpc GetAllAccounts (google.protobuf.Empty) returns (Accounts);
 
   rpc Withdraw (WithdrawRequest) returns (stream Money);
+
+  rpc deposit (stream DepositRequest) returns (AccountBalance);
 
 }
