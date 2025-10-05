@@ -19,7 +19,7 @@ class UnaryCommunicationTest extends AbstractTest {
     @Test
     @DisplayName("Should get the account balance for a given account number")
     void test1() {
-        final var expectedAccountNumber = 123;
+        final var expectedAccountNumber = 1;
         final var request = BalanceCheckRequest.newBuilder()
             .setAccountNumber(expectedAccountNumber)
             .build();
@@ -39,7 +39,7 @@ class UnaryCommunicationTest extends AbstractTest {
     @Test
     @DisplayName("Should get account balance asynchronously for a given account number")
     void test3() {
-        final var expectedAccountNumber = 123;
+        final var expectedAccountNumber = 1;
         final var request = BalanceCheckRequest.newBuilder()
             .setAccountNumber(expectedAccountNumber)
             .build();
