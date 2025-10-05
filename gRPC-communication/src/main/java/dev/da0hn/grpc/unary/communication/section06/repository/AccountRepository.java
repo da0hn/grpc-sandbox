@@ -20,7 +20,7 @@ public class AccountRepository {
     private AccountRepository() { }
 
     public static Integer getAccountBalance(final Integer accountNumber) {
-        return IN_MEMORY_DATABASE.get(accountNumber);
+        return IN_MEMORY_DATABASE.getOrDefault(accountNumber, null);
     }
 
     public static void deductAmount(final int accountNumber, final int amount) {
