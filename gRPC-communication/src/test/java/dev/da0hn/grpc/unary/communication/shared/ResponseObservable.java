@@ -15,6 +15,8 @@ public class ResponseObservable<T> implements StreamObserver<T> {
 
     private static final Logger log = LoggerFactory.getLogger(ResponseObservable.class);
 
+    private static final int COUNT_DOWN_TIMEOUT = 30;
+
     private final List<T> list = Collections.synchronizedList(new ArrayList<>());
 
     private final CountDownLatch countDownLatch;
@@ -48,7 +50,7 @@ public class ResponseObservable<T> implements StreamObserver<T> {
 
     public void await() {
         try {
-            this.countDownLatch.await(5, TimeUnit.SECONDS);
+            this.countDownLatch.await(COUNT_DOWN_TIMEOUT, TimeUnit.SECONDS);
         }
         catch (final InterruptedException e) {
             throw new RuntimeException(e);
