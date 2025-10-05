@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package section07;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "dev.da0hn.grpc.proto.section07";
+
+/*
+  Server emits 1-100 very fast
+  We want to control the rate in which server emits based on the client's processing speed (vice-versa)
+  This process is called back-pressure handling / flow control
+*/
+message Output {
+  int32 value = 1;
+}
+
+message Input {
+  int32 size = 1;
+}
+
+service FlowControlService {
+  rpc GetMessages (stream Input) returns (stream Output);
+}
